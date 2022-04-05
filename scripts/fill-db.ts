@@ -17,9 +17,47 @@ const mapFields: { [key in keyof Author]: string } = {
   'Info contenido': 'content',
 };
 
-const backfillAuthors = async () => {
+const backfillGenres = async () => {
   const allAuthors = await parse<Author>('./data/mock-data.csv');
-  console.log(allAuthors);
+
+  const uniqueGenres: string[] = [];
+
+  allAuthors.forEach((author) => {
+    if (uniqueGenres.includes(author['Estilo principal'])) return;
+    uniqueGenres.push(author['Estilo principal']);
+  });
+
+  const createdGenres = await prisma.genre.createMany({
+    data: uniqueGenres.map((genre) => ({ name: genre })),
+  });
+  console.log('Created genres?', createdGenres);
 };
 
+const backfillAuthors = async () => {
+  const allAuthors = await parse<Author>('./data/mock-data.csv');
+
+  const genres = await prisma.genre.findMany();
+
+  const formattedAuthors = allAuthors.map((author) => {
+    const genreId = genres.find(
+      (genre) => genre.name === author['Estilo principal']
+    )!.id;
+
+    return {
+      name: author.Nombre,
+      genreId,
+      nationality: author.Nacionalidad,
+      decadesInfluence: author['Décadas influencia'],
+      content: author['Info contenido'],
+    };
+  });
+
+  const creation = await prisma.author.createMany({
+    data: formattedAuthors,
+  });
+
+  console.log('Created authors?', creation);
+};
+
+//backfillGenres();
 backfillAuthors();
