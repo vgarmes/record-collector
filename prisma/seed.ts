@@ -59,5 +59,16 @@ const backfillAuthors = async () => {
   console.log('Created authors?', creation);
 };
 
-//backfillGenres();
-backfillAuthors();
+const main = async () => {
+  await backfillGenres();
+  await backfillAuthors();
+};
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
