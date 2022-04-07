@@ -5,3 +5,6 @@ You need to re-run `prisma generate` command after every change that's made to y
 
 To seed the database:
 `npx prisma db seed`
+
+pscale connect record-collector-db --port 3309
+pscale connect record-collector-db --port 3310

@@ -74,6 +74,6 @@ model Genre {
 
 model User {
   id      Int      @id @default(autoincrement())
-  name    String
+  name    String   @unique
   records Record[]
 }
