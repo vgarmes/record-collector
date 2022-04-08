@@ -1,6 +1,12 @@
-import { Grading, Record } from '@prisma/client';
+import { Author, Grading, Record } from '@prisma/client';
 import { prisma } from '../db';
 import { parse } from '../utils/csv-parser';
+import fs from 'fs';
+
+const mockAuthorFile = './data/mock-data.csv';
+const mockRecordFile = './data/record-mock-data.csv';
+const authorFile = './data/AUTHOR_RECORD_LIST.csv';
+const recordFile = './data/RECORD_COLLECTOR_BASE.csv';
 
 interface RawAuthor {
   Nombre: string;
@@ -41,10 +47,18 @@ const parseGrading = (grading: string) => {
   switch (grading) {
     case 'MINT':
       return Grading.MINT;
-    case 'EXP':
+    case 'EX+':
       return Grading.EXP;
     case 'EX':
+      return Grading.EX;
+    case 'VG':
       return Grading.VG;
+    case 'GOOD':
+      return Grading.GOOD;
+    case 'FAIR':
+      return Grading.FAIR;
+    case 'POOR':
+      return Grading.POOR;
     default:
       return null;
   }
@@ -54,32 +68,39 @@ const seedGenres = async (allAuthors: RawAuthor[]) => {
   const uniqueGenres: string[] = [];
 
   allAuthors.forEach((author) => {
-    if (uniqueGenres.includes(author['Estilo principal'])) return;
-    uniqueGenres.push(author['Estilo principal']);
+    const genre = author['Estilo principal'] || 'N/A'; // to discard empty fields
+    if (uniqueGenres.includes(genre)) return;
+    uniqueGenres.push(genre);
   });
 
   const createdGenres = await prisma.genre.createMany({
     data: uniqueGenres.map((genre) => ({ name: genre })),
+    skipDuplicates: true,
   });
   console.log('Created genres?', createdGenres);
 };
 
 const seedAuthors = async (allAuthors: RawAuthor[]) => {
-  const genres = await prisma.genre.findMany();
+  const formattedAuthors: Omit<Author, 'id' | 'createdAt' | 'updatedAt'>[] = [];
+  const stream = fs.createWriteStream('data/logfile.txt', { flags: 'a' });
+  for (const author of allAuthors) {
+    const genre = await prisma.genre.findUnique({
+      where: { name: author['Estilo principal'] || 'N/A' },
+    });
 
-  const formattedAuthors = allAuthors.map((author) => {
-    const genreId = genres.find(
-      (genre) => genre.name === author['Estilo principal']
-    )!.id;
+    if (!genre) {
+      return stream.write(JSON.stringify(author) + '\n');
+    }
 
-    return {
+    formattedAuthors.push({
       name: author.Nombre,
-      genreId,
+      genreId: genre.id,
       nationality: author.Nacionalidad,
       decadesInfluence: author['Décadas influencia'],
       content: author['Info contenido'],
-    };
-  });
+    });
+  }
+  stream.end();
 
   const creation = await prisma.author.createMany({
     data: formattedAuthors,
@@ -118,7 +139,9 @@ const seedLabels = async (allRecords: RawRecord[]) => {
 
 const seedRecords = async (allRecords: RawRecord[]) => {
   const formattedRecords: Omit<Record, 'id' | 'createdAt' | 'updatedAt'>[] = [];
+  const stream = fs.createWriteStream('data/logfile.txt', { flags: 'a' });
   for (const record of allRecords) {
+    console.log(record);
     const author = await prisma.author.findUnique({
       where: { name: record.Author },
     });
@@ -132,7 +155,7 @@ const seedRecords = async (allRecords: RawRecord[]) => {
     });
 
     if (!author || !owner || !label) {
-      return;
+      return stream.write(JSON.stringify(record) + '\n');
     }
 
     formattedRecords.push({
@@ -153,22 +176,23 @@ const seedRecords = async (allRecords: RawRecord[]) => {
       comments: record.Comments,
     });
   }
+  stream.end();
 
   const createdRecords = await prisma.record.createMany({
     data: formattedRecords,
   });
-  console.log('Created labels?', createdRecords);
+  console.log('Created records?', createdRecords);
 };
 
 const main = async () => {
-  const allAuthors = await parse<RawAuthor>('./data/mock-data.csv');
-  await seedGenres(allAuthors);
+  const allAuthors = await parse<RawAuthor>(authorFile);
+  //await seedGenres(allAuthors);
   await seedAuthors(allAuthors);
 
-  const allRecords = await parse<RawRecord>('./data/record-mock-data.csv');
-  await seedOwners(allRecords);
-  seedLabels(allRecords);
-  await seedRecords(allRecords);
+  //const allRecords = await parse<RawRecord>(recordFile);
+  //await seedOwners(allRecords);
+  //await seedLabels(allRecords);
+  //await seedRecords(allRecords);
 };
 
 main()
