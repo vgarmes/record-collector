@@ -1,7 +1,8 @@
-import { Author, Grading, Record } from '@prisma/client';
+import { Author, Grading, Record, Role } from '@prisma/client';
 import { prisma } from '../db';
 import { parse } from '../utils/csv-parser';
 import fs from 'fs';
+import { hashPassword } from '../utils/auth';
 
 const mockAuthorFile = './data/mock-data.csv';
 const mockRecordFile = './data/record-mock-data.csv';
@@ -117,8 +118,16 @@ const seedOwners = async (allRecords: RawRecord[]) => {
     uniqueOwners.push(record.Procedencia);
   });
 
+  const owners = await Promise.all(
+    uniqueOwners.map(async (owner) => ({
+      name: owner,
+      password: await hashPassword('admin123'),
+      role: Role.ADMIN,
+    }))
+  );
+
   const createdOwners = await prisma.user.createMany({
-    data: uniqueOwners.map((owner) => ({ name: owner })),
+    data: owners,
   });
   console.log('Created owners?', createdOwners);
 };

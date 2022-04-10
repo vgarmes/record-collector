@@ -72,8 +72,15 @@ model Genre {
   authors Author[]
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String   @unique
-  records Record[]
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  password String
+  role     Role     @default(USER)
+  records  Record[]
 }
