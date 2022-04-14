@@ -14,9 +14,18 @@ import {
   IconButton,
   useColorModeValue,
   ChakraProps,
+  Button,
+  Avatar,
+  Text,
 } from '@chakra-ui/react';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import {
+  HamburgerIcon,
+  LockIcon,
+  SettingsIcon,
+  SmallCloseIcon,
+} from '@chakra-ui/icons';
 //import ColorModeButton from './color-mode-button';
+import { useSession } from 'next-auth/react';
 
 interface LinkItemProps {
   href: string;
@@ -45,6 +54,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
+  const { data: session, status } = useSession();
   return (
     <Box
       position="fixed"
@@ -69,23 +79,45 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
           </Heading>
         </Flex>
         <Stack
-          direction={{ base: 'column', md: 'row' }}
-          display={{ base: 'none', md: 'flex' }}
-          width={{ base: 'full', md: 'auto' }}
+          direction={{ base: 'column', sm: 'row' }}
+          display={{ base: 'none', sm: 'flex' }}
+          width={{ base: 'full', sm: 'auto' }}
           alignItems="center"
           flexGrow={1}
-          mt={{ base: 4, md: 0 }}
+          mt={{ base: 4, sm: 0 }}
         >
-          <LinkItem href="/works" path={path}>
-            Works
+          <LinkItem href="/records" path={path}>
+            Discos
           </LinkItem>
-          <LinkItem href="/posts" path={path}>
-            Posts
+          <LinkItem href="/artists" path={path}>
+            Artistas
           </LinkItem>
         </Stack>
-        <Box flex={1} alignSelf="right">
+
+        <Box>
+          {session?.user && status === 'authenticated' ? (
+            <Menu>
+              <MenuButton>
+                <Avatar name={session.user.name!} size="sm" src={''} />
+              </MenuButton>
+              <MenuList>
+                <NextLink href="/settings" passHref>
+                  <MenuItem as={Link} icon={<SettingsIcon />}>
+                    Ajustes
+                  </MenuItem>
+                </NextLink>
+                <MenuItem as={Link} icon={<LockIcon />}>
+                  Cerrar sesión
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <NextLink href="/signin" passHref>
+              <Link>Iniciar sesión</Link>
+            </NextLink>
+          )}
           {/*  <ColorModeButton /> */}
-          <Box ml={2} display={{ base: 'inline-block', md: 'none' }}>
+          <Box ml={4} display={{ base: 'inline-block', sm: 'none' }}>
             <Menu>
               <MenuButton
                 as={IconButton}
