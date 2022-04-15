@@ -17,6 +17,7 @@ import {
   Button,
   Avatar,
   Text,
+  MenuDivider,
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -25,7 +26,7 @@ import {
   SmallCloseIcon,
 } from '@chakra-ui/icons';
 //import ColorModeButton from './color-mode-button';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 interface LinkItemProps {
   href: string;
@@ -39,8 +40,8 @@ const LinkItem: React.FC<LinkItemProps> = ({ href, path, children }) => {
     <NextLink href={href} passHref>
       <Link
         p={2}
-        bg={active ? 'glassTeal' : undefined}
-        color={active ? '#202023' : 'var(--color-inactive-link)'}
+        borderBottom="3px solid"
+        borderColor={active ? 'teal.100' : 'transparent'}
       >
         {children}
       </Link>
@@ -69,8 +70,8 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
         display="flex"
         p={2}
         maxW="container.md"
-        flexWrap="wrap"
         alignItems="center"
+        flexWrap="wrap"
         justifyContent="space-between"
       >
         <Flex align="center" mr={5}>
@@ -82,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
           direction={{ base: 'column', sm: 'row' }}
           display={{ base: 'none', sm: 'flex' }}
           width={{ base: 'full', sm: 'auto' }}
-          alignItems="center"
+          align="center"
           flexGrow={1}
           mt={{ base: 4, sm: 0 }}
         >
@@ -106,7 +107,8 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
                     Ajustes
                   </MenuItem>
                 </NextLink>
-                <MenuItem as={Link} icon={<LockIcon />}>
+                <MenuDivider />
+                <MenuItem icon={<LockIcon />} onClick={() => console.log()}>
                   Cerrar sesión
                 </MenuItem>
               </MenuList>
