@@ -76,9 +76,11 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
         justifyContent="space-between"
       >
         <Flex align="center" mr={5}>
-          <Heading as="h1" size="lg" letterSpacing={'tighter'}>
-            Logo
-          </Heading>
+          <NextLink href="/" passHref>
+            <Link fontSize="3xl" fontWeight="bold" letterSpacing={'tighter'}>
+              Logo
+            </Link>
+          </NextLink>
         </Flex>
         <Stack
           direction={{ base: 'column', sm: 'row' }}
@@ -115,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
               </MenuList>
             </Menu>
           ) : (
-            <NextLink href="/signin" passHref>
+            <NextLink href="/auth/signin" passHref>
               <Link>Iniciar sesión</Link>
             </NextLink>
           )}
