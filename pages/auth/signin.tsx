@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { Field, FieldInputProps, Form, Formik, FormikProps } from 'formik';
 import { NextPage, NextPageContext } from 'next';
-import { getSession, signIn, SignInResponse } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 
