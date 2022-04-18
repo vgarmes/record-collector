@@ -114,8 +114,8 @@ const seedOwners = async (allRecords: RawRecord[]) => {
   const uniqueOwners: string[] = [];
 
   allRecords.forEach((record) => {
-    if (uniqueOwners.includes(record.Procedencia)) return;
-    uniqueOwners.push(record.Procedencia);
+    if (uniqueOwners.includes(record.Procedencia.toLowerCase())) return;
+    uniqueOwners.push(record.Procedencia.toLowerCase());
   });
 
   const owners = await Promise.all(
@@ -156,7 +156,7 @@ const seedRecords = async (allRecords: RawRecord[]) => {
     });
 
     const owner = await prisma.user.findUnique({
-      where: { name: record.Procedencia },
+      where: { name: record.Procedencia.toLowerCase() },
     });
 
     const label = await prisma.label.findUnique({
@@ -196,10 +196,10 @@ const seedRecords = async (allRecords: RawRecord[]) => {
 const main = async () => {
   const allAuthors = await parse<RawAuthor>(authorFile);
   //await seedGenres(allAuthors);
-  await seedAuthors(allAuthors);
+  //await seedAuthors(allAuthors);
 
-  //const allRecords = await parse<RawRecord>(recordFile);
-  //await seedOwners(allRecords);
+  const allRecords = await parse<RawRecord>(recordFile);
+  await seedOwners(allRecords);
   //await seedLabels(allRecords);
   //await seedRecords(allRecords);
 };
