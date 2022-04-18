@@ -42,6 +42,7 @@ const LinkItem: React.FC<LinkItemProps> = ({ href, path, children }) => {
         p={2}
         borderBottom="3px solid"
         borderColor={active ? 'teal.100' : 'transparent'}
+        sx={{ ':hover': { textDecoration: 'none', color: 'teal.100' } }}
       >
         {children}
       </Link>
@@ -108,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
                   </MenuItem>
                 </NextLink>
                 <MenuDivider />
-                <MenuItem icon={<LockIcon />} onClick={() => console.log()}>
+                <MenuItem icon={<LockIcon />} onClick={() => signOut()}>
                   Cerrar sesión
                 </MenuItem>
               </MenuList>
