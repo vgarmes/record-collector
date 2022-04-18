@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '../../../db';
 import { verifyPassword } from '../../../utils/auth';
@@ -35,10 +35,23 @@ export default NextAuth({
           throw new Error('Invalid credentials');
         }
 
-        return { name: user.name };
+        return { name: user.name, role: user.role };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user; // this is what is returned from authorize callback
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = token.user as User;
+      return session;
+    },
+  },
+
   pages: {
     signIn: '/auth/signin',
     error: '/auth/error',
