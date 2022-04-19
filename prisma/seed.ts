@@ -1,13 +1,11 @@
-import { Author, Grading, Record, Role } from '@prisma/client';
+import { Author, Record, Role } from '@prisma/client';
 import { prisma } from '../db';
 import { parse } from '../utils/csv-parser';
 import fs from 'fs';
 import { hashPassword } from '../utils/auth';
 
-const mockAuthorFile = './data/mock-data.csv';
-const mockRecordFile = './data/record-mock-data.csv';
 const authorFile = './data/AUTHOR_RECORD_LIST.csv';
-const recordFile = './data/RECORD_COLLECTOR_BASE.csv';
+const recordFile = './data/RECORD_LIST.csv';
 
 interface RawAuthor {
   Nombre: string;
@@ -18,6 +16,7 @@ interface RawAuthor {
 }
 
 interface RawRecord {
+  'Id Record': string;
   Record: string;
   Formato: string;
   Author: string;
@@ -25,45 +24,7 @@ interface RawRecord {
   Version: string;
   Procedencia: string;
   Label: string;
-  Copy: string;
-  'C Year': string;
-  'Eur Price': string;
-  'Price Ref': string;
-  'Priced Year': string;
-  Collectible: string;
-  Grading: string;
-  Referencia: string;
-  Comments: string;
 }
-
-const mapFields: { [key in keyof RawAuthor]: string } = {
-  Nombre: 'name',
-  'Estilo principal': 'genre',
-  Nacionalidad: 'nationality',
-  'Décadas influencia': 'decadesInfluence',
-  'Info contenido': 'content',
-};
-
-const parseGrading = (grading: string) => {
-  switch (grading) {
-    case 'MINT':
-      return Grading.MINT;
-    case 'EX+':
-      return Grading.EXP;
-    case 'EX':
-      return Grading.EX;
-    case 'VG':
-      return Grading.VG;
-    case 'GOOD':
-      return Grading.GOOD;
-    case 'FAIR':
-      return Grading.FAIR;
-    case 'POOR':
-      return Grading.POOR;
-    default:
-      return null;
-  }
-};
 
 const seedGenres = async (allAuthors: RawAuthor[]) => {
   const uniqueGenres: string[] = [];
@@ -147,10 +108,17 @@ const seedLabels = async (allRecords: RawRecord[]) => {
 };
 
 const seedRecords = async (allRecords: RawRecord[]) => {
-  const formattedRecords: Omit<Record, 'id' | 'createdAt' | 'updatedAt'>[] = [];
+  //await deleteAllRecords();
+  let formattedRecords: Omit<Record, 'id' | 'createdAt' | 'updatedAt'>[] = [];
   const stream = fs.createWriteStream('data/logfile.txt', { flags: 'a' });
+  const admin = await prisma.user.findUnique({ where: { name: 'j' } });
+  if (!admin) {
+    throw new Error('no fallback user available');
+  }
+  const BATCH_SIZE = 100;
+  let i = 0;
   for (const record of allRecords) {
-    console.log(record);
+    console.log('inserting: ', record['Id Record']);
     const author = await prisma.author.findUnique({
       where: { name: record.Author },
     });
@@ -163,45 +131,51 @@ const seedRecords = async (allRecords: RawRecord[]) => {
       where: { name: record.Label },
     });
 
-    if (!author || !owner || !label) {
-      return stream.write(JSON.stringify(record) + '\n');
+    if (!author || !label) {
+      stream.write(JSON.stringify(record) + '\n');
+      continue;
     }
 
     formattedRecords.push({
       title: record.Record,
       format: record.Formato,
       authorId: author.id,
-      year: parseInt(record['P Year']),
+      year: parseInt(record['P Year']) || null,
       version: record.Version,
-      ownerId: owner.id,
+      ownerId: owner?.id || admin.id,
       labelId: label.id,
-      copy: record.Copy,
-      price: parseInt(record['Eur Price']),
-      priceRef: record['Price Ref'],
-      pricedYear: parseInt(record['Priced Year']),
-      collectible: parseInt(record.Collectible) === 1,
-      grading: parseGrading(record.Grading),
-      reference: record.Referencia,
-      comments: record.Comments,
     });
+    if (i === BATCH_SIZE - 1) {
+      await prisma.record.createMany({
+        data: formattedRecords,
+      });
+      formattedRecords = [];
+      i = 0;
+    } else {
+      i += 1;
+    }
   }
   stream.end();
 
-  const createdRecords = await prisma.record.createMany({
+  // insert the rest
+  await prisma.record.createMany({
     data: formattedRecords,
   });
-  console.log('Created records?', createdRecords);
+};
+
+const deleteAllRecords = async () => {
+  await prisma.record.deleteMany({});
 };
 
 const main = async () => {
   const allAuthors = await parse<RawAuthor>(authorFile);
-  //await seedGenres(allAuthors);
-  //await seedAuthors(allAuthors);
+  await seedGenres(allAuthors);
+  await seedAuthors(allAuthors);
 
   const allRecords = await parse<RawRecord>(recordFile);
   await seedOwners(allRecords);
-  //await seedLabels(allRecords);
-  //await seedRecords(allRecords);
+  await seedLabels(allRecords);
+  await seedRecords(allRecords);
 };
 
 main()
