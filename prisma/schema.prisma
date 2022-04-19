@@ -27,27 +27,19 @@ model Author {
 }
 
 model Record {
-  id          Int      @id @default(autoincrement())
-  title       String
-  format      String
-  author      Author   @relation(fields: [authorId], references: [id])
-  authorId    Int
-  year        Int
-  version     String?
-  owner       User     @relation(fields: [ownerId], references: [id])
-  ownerId     Int
-  label       Label    @relation(fields: [labelId], references: [id])
-  labelId     Int
-  copy        String?
-  price       Int?
-  priceRef    String?
-  pricedYear  Int?
-  collectible Boolean?
-  grading     Grading?
-  reference   String?
-  comments    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  title     String
+  format    String
+  author    Author   @relation(fields: [authorId], references: [id])
+  authorId  Int
+  year      Int?
+  version   String?
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+  label     Label    @relation(fields: [labelId], references: [id])
+  labelId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Grading {
