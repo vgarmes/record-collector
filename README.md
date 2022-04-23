@@ -20,5 +20,8 @@ Probably not needed:
 https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/generating-prisma-client
 You need to re-run `prisma generate` command after every change that's made to your Prisma schema to update the generated Prisma Client code.
 
+# Planetscale - CLI useful commands
+
+pscale auth login
 pscale connect record-collector-db --port 3309
 pscale connect record-collector-db --port 3310

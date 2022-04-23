@@ -1,5 +1,5 @@
 import { Author, Record, Role } from '@prisma/client';
-import { prisma } from '../db';
+import { prisma } from '../server/prisma';
 import { parse } from '../utils/csv-parser';
 import fs from 'fs';
 import { hashPassword } from '../utils/auth';
