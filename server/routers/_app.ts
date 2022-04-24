@@ -3,6 +3,7 @@
  */
 import { createRouter } from '../createRouter';
 import { recordRouter } from './record';
+import { userRouter } from './user';
 import superjson from 'superjson';
 
 export const appRouter = createRouter()
@@ -16,6 +17,7 @@ export const appRouter = createRouter()
       return 'yay!';
     },
   })
+  .merge('user.', userRouter)
   .merge('record.', recordRouter);
 
 export type AppRouter = typeof appRouter;
