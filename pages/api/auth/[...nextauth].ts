@@ -35,7 +35,7 @@ export default NextAuth({
           throw new Error('Invalid credentials');
         }
 
-        return { name: user.name, role: user.role };
+        return { id: user.id, name: user.name, role: user.role };
       },
     }),
   ],
@@ -47,7 +47,7 @@ export default NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user as User;
+      session.user = token.user;
       return session;
     },
   },
