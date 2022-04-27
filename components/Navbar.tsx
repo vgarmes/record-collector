@@ -70,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
       <Container
         display="flex"
         p={2}
-        maxW="container.md"
+        maxW="container.lg"
         alignItems="center"
         flexWrap="wrap"
         justifyContent="space-between"

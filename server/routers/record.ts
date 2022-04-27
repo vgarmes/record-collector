@@ -25,7 +25,9 @@ export const recordRouter = createRouter()
         skip,
         take,
         orderBy: {
-          title: 'asc',
+          author: {
+            name: 'asc',
+          },
         },
         include: {
           author: {
