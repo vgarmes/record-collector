@@ -21,26 +21,34 @@ export const recordRouter = createRouter()
       const take = input.take ?? 50;
       //const sortBy = input.sortBy ??
 
-      return prisma.record.findMany({
-        skip,
-        take,
-        orderBy: {
-          author: {
-            name: 'asc',
-          },
-        },
-        include: {
-          author: {
-            select: {
-              name: true,
+      return prisma.$transaction([
+        prisma.record.findMany({
+          skip,
+          take,
+          orderBy: [
+            {
+              author: {
+                name: 'asc',
+              },
+            },
+            {
+              year: 'asc',
+            },
+          ],
+          include: {
+            author: {
+              select: {
+                name: true,
+              },
+            },
+            label: {
+              select: {
+                name: true,
+              },
             },
           },
-          label: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
+        }),
+        prisma.record.count(),
+      ]);
     },
   });
