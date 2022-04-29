@@ -9,13 +9,13 @@ import { Box, Button, Flex, IconButton, Spinner, Text } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const Home: NextPage = () => {
-  const [pageSize, setPageSize] = useState(20);
+  const pageSize = 20;
   const [pageIndex, setPageIndex] = useState(0);
-  const { data, isLoading } = trpc.useQuery([
-    'record.paginated',
-    { skip: pageIndex * pageSize, take: pageSize },
-  ]);
-
+  const { data, isLoading } = trpc.useQuery(
+    ['record.paginated', { skip: pageIndex * pageSize, take: pageSize }],
+    { keepPreviousData: true }
+  );
+  console.log(data);
   if (isLoading || !data) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -24,10 +24,9 @@ const Home: NextPage = () => {
     );
   }
 
-  const [records, count] = data;
   return (
     <div>
-      <RecordsTable data={records} />
+      <RecordsTable data={data?.data} />
       <Flex align="center" gap={5} width="100%" justify="center" mt={5}>
         <IconButton
           aria-label="reduce page number"
@@ -42,7 +41,7 @@ const Home: NextPage = () => {
         <IconButton
           aria-label="increase page number"
           variant="outline"
-          disabled={pageIndex === Math.ceil(count / pageSize)}
+          disabled={pageIndex === Math.ceil(data.total / pageSize)}
           onClick={() => setPageIndex((prev) => prev + 1)}
           icon={<ChevronRightIcon />}
         >
