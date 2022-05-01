@@ -1,8 +1,8 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Role, Record } from '@prisma/client';
 import { prisma } from '../prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { createRouter } from '../createRouter';
+import { createProtectedRouter, createRouter } from '../createRouter';
 
 export const recordRouter = createRouter()
   .query('all', {
@@ -51,5 +51,46 @@ export const recordRouter = createRouter()
       const total = await prisma.record.count();
 
       return { data, total };
+    },
+  });
+
+export const recordAdminRouter = createProtectedRouter(Role.ADMIN)
+  .mutation('create', {
+    input: z.object({
+      title: z.string().min(1).max(50),
+      format: z.string(),
+      authorId: z.number(),
+      year: z.number().nullable(),
+      version: z.string().nullable(),
+      ownerId: z.number(),
+      labelId: z.number(),
+    }),
+    async resolve({ input }) {
+      const newRecord = await prisma.record.create({
+        data: input,
+      });
+      return newRecord;
+    },
+  })
+  .mutation('edit', {
+    input: z.object({
+      id: z.number(),
+      data: z.object({
+        title: z.string().min(1).max(50).optional(),
+        format: z.string().optional(),
+        authorId: z.number().optional(),
+        year: z.number().nullable().optional(),
+        version: z.string().nullable().optional(),
+        ownerId: z.number().optional(),
+        labelId: z.number().optional(),
+      }),
+    }),
+    async resolve({ input }) {
+      const { id, data } = input;
+      const record = await prisma.record.update({
+        where: { id },
+        data,
+      });
+      return record;
     },
   });

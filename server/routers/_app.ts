@@ -2,7 +2,7 @@
  * This file contains the root router of your tRPC-backend
  */
 import { createRouter } from '../createRouter';
-import { recordRouter } from './record';
+import { recordAdminRouter, recordRouter } from './record';
 import { userRouter } from './user';
 import superjson from 'superjson';
 
@@ -18,6 +18,7 @@ export const appRouter = createRouter()
     },
   })
   .merge('user.', userRouter)
-  .merge('record.', recordRouter);
+  .merge('record.', recordRouter)
+  .merge('recordAdmin.', recordAdminRouter);
 
 export type AppRouter = typeof appRouter;
