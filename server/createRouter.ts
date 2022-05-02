@@ -12,7 +12,7 @@ export function createRouter() {
 
 export function createProtectedRouter(role?: Role) {
   return trpc.router<Context>().middleware(async ({ ctx, next }) => {
-    if (!ctx.session || (role && ctx.session.role !== role)) {
+    if (!ctx.session || (role && ctx.session.user.role !== role)) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
     // infers that `session` is non-nullable to downstream procedures
