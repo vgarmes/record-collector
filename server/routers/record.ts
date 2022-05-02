@@ -67,7 +67,27 @@ export const recordAdminRouter = createProtectedRouter(Role.ADMIN)
     }),
     async resolve({ input }) {
       const newRecord = await prisma.record.create({
-        data: input,
+        data: {
+          title: input.title,
+          format: input.format,
+          year: input.year,
+          version: input.version,
+          author: {
+            connect: {
+              id: input.authorId,
+            },
+          },
+          label: {
+            connect: {
+              id: input.labelId,
+            },
+          },
+          owner: {
+            connect: {
+              id: input.ownerId,
+            },
+          },
+        },
       });
       return newRecord;
     },
