@@ -10,9 +10,10 @@ import { HTMLInputTypeAttribute } from 'react';
 interface Props<T> {
   name: string & keyof T;
   form: FormikProps<T>;
-  field: FieldInputProps<string>;
+  field: FieldInputProps<string | number>;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  label?: string;
 }
 
 const FieldInput = <T extends unknown>({
@@ -21,10 +22,11 @@ const FieldInput = <T extends unknown>({
   field,
   placeholder,
   type,
+  label,
 }: Props<T>) => {
   return (
     <FormControl isInvalid={form.touched[name] && !!form.errors[name]}>
-      <FormLabel htmlFor={name}>Contraseña actual:</FormLabel>
+      <FormLabel htmlFor={name}>{label}</FormLabel>
       <Input
         {...field}
         id={name}
