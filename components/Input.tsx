@@ -9,12 +9,13 @@ import {
 
 interface Props extends ChakraInputProps {
   name: string;
-  label: string;
+  label?: string;
+  disabled?: boolean;
 }
-const Input = ({ name, label, ...props }: Props) => {
+const Input = ({ name, label, disabled, ...props }: Props) => {
   const [field, meta, helpers] = useField(name);
   return (
-    <FormControl isInvalid={meta.touched && !!meta.error}>
+    <FormControl isInvalid={meta.touched && !!meta.error} isDisabled={disabled}>
       <FormLabel htmlFor={name}>{label}</FormLabel>
       <ChakraInput {...props} {...field} />
       <FormErrorMessage>{meta.touched && meta.error}</FormErrorMessage>
