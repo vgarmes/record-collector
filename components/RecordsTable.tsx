@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 interface Props {
-  data: inferQueryOutput<'record.paginated'>[0];
+  data: inferQueryOutput<'record.paginated'>['data'];
 }
 
 const RecordsTable = ({ data }: Props) => {
