@@ -9,13 +9,17 @@ export const authorRouter = createRouter().query('search', {
     searchQuery: z.string().optional(),
   }),
   async resolve({ input }) {
+    console.log(input);
     return prisma.author.findMany({
       where: {
         name: {
           contains: input.searchQuery,
         },
       },
-      take: 20,
+      orderBy: {
+        name: 'asc',
+      },
+      take: 10,
     });
   },
 });
