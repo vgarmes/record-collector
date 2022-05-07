@@ -15,16 +15,16 @@ import { authors } from '../data/author-mock';
 interface Props {
   placeholder: string;
   isOpen: boolean;
+  items: { id: string; label: string }[];
   onClose: () => void;
-  searchValue: string;
   onSearch: (value: string) => void;
 }
 
 const SearchModal = ({
   placeholder,
   isOpen,
+  items,
   onClose,
-  searchValue,
   onSearch,
 }: Props) => {
   const timeoutRef = React.useRef<number | null>(null);
@@ -34,10 +34,9 @@ const SearchModal = ({
 
     timeoutRef.current = window.setTimeout(() => {
       console.log(event.target?.value);
+      onSearch(event.target?.value);
     }, 300);
   };
-
-  const data = authors;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -54,7 +53,7 @@ const SearchModal = ({
             />
           </Flex>
           <Box maxH="66vh" overflow="auto">
-            {data && searchValue && (
+            {items && (
               <Box px={4}>
                 <Box
                   as="ul"
@@ -63,10 +62,10 @@ const SearchModal = ({
                   borderTopWidth="1px"
                   borderColor="gray.200"
                 >
-                  {data.map((author) => (
+                  {items.map((item) => (
                     <Flex
                       as="li"
-                      key={author.id}
+                      key={item.id}
                       width="100%"
                       align="center"
                       minH={16}
@@ -79,7 +78,7 @@ const SearchModal = ({
                         ':hover': { backgroundColor: 'teal.500' },
                       }}
                     >
-                      <Text fontWeight="semibold">{author.name}</Text>
+                      <Text fontWeight="semibold">{item.label}</Text>
                     </Flex>
                   ))}
                 </Box>
