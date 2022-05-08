@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { Search2Icon } from '@chakra-ui/icons';
 import {
   Modal,
@@ -10,12 +10,12 @@ import {
   Text,
   Box,
 } from '@chakra-ui/react';
-import { authors } from '../data/author-mock';
+import { useDebounce } from '../hooks/useDebounce';
 
 interface Props {
   placeholder: string;
   isOpen: boolean;
-  items: { id: string; label: string }[];
+  items: { id: string; label: string }[] | undefined;
   onClose: () => void;
   onSearch: (value: string) => void;
 }
@@ -27,16 +27,12 @@ const SearchModal = ({
   onClose,
   onSearch,
 }: Props) => {
-  const timeoutRef = React.useRef<number | null>(null);
+  const [value, setValue] = useState('');
+  const debouncedSearch = useDebounce(value, 300);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-
-    timeoutRef.current = window.setTimeout(() => {
-      console.log(event.target?.value);
-      onSearch(event.target?.value);
-    }, 300);
-  };
+  useEffect(() => {
+    onSearch(debouncedSearch);
+  }, [debouncedSearch, onSearch]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -49,7 +45,8 @@ const SearchModal = ({
               variant="unstyled"
               size="lg"
               placeholder={placeholder}
-              onChange={handleChange}
+              value={value}
+              onChange={(e) => setValue(e.currentTarget.value)}
             />
           </Flex>
           <Box maxH="66vh" overflow="auto">
