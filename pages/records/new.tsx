@@ -1,5 +1,5 @@
 import { Record } from '@prisma/client';
-import { Field, FieldInputProps, Form, Formik, FormikProps } from 'formik';
+import { Field, FieldInputProps, Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
@@ -41,12 +41,11 @@ const NewRecord = () => {
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchAuthor, setSearchAuthor] = useState('');
-
+  const [authorId, setAuthorId] = useState<{ id: number; label: string }>();
   const { data: authors, ...response } = trpc.useQuery(
     ['author.search', { searchQuery: searchAuthor }],
     { keepPreviousData: true }
   );
-  console.log(response);
 
   if (status === 'loading') {
     return 'Loading or not authenticated...';
@@ -70,18 +69,10 @@ const NewRecord = () => {
       <Button type="button" variant="outline" onClick={onOpen}>
         Open
       </Button>
-      <SearchModal
-        placeholder="añadir autor"
-        isOpen={isOpen}
-        onClose={onClose}
-        items={authors?.map((author) => ({
-          id: author.id.toString(),
-          label: author.name,
-        }))}
-        onSearch={setSearchAuthor}
-      />
+
       <Formik
         initialValues={initialValues}
+        validateOnMount={true}
         validationSchema={Schema}
         onSubmit={async (values, actions) => {
           console.log(values);
@@ -98,9 +89,31 @@ const NewRecord = () => {
       >
         {(props) => (
           <Form>
+            <SearchModal
+              placeholder="añadir autor"
+              isOpen={isOpen}
+              onClose={onClose}
+              items={authors?.map((author) => ({
+                id: author.id,
+                label: author.name,
+              }))}
+              onSearch={setSearchAuthor}
+              onClickResult={(author) => {
+                props.setFieldValue('authorId', author.id);
+                props.setFieldValue('author', author.label);
+              }}
+            />
             <Input name="title" placeholder="Título" label="Título" />
             <Input name="format" placeholder="Formato" label="Formato" />
-            <Input name="authorId" type="number" hidden />
+            <Input name="authorId" value={authorId?.id} type="number" hidden />
+            <Input
+              name="author"
+              value={authorId?.label}
+              label="Autor"
+              sx={{ cursor: 'pointer' }}
+              isReadOnly
+              onClick={onOpen}
+            />
             <Input name="year" placeholder="Año" label="Año" type="number" />
             <Input name="ownerId" type="number" hidden />
             <Input name="owner" placeholder="Procedencia" label="Procedencia" />

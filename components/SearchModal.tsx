@@ -12,21 +12,28 @@ import {
 } from '@chakra-ui/react';
 import { useDebounce } from '../hooks/useDebounce';
 
-interface Props {
-  placeholder: string;
-  isOpen: boolean;
-  items: { id: string; label: string }[] | undefined;
-  onClose: () => void;
-  onSearch: (value: string) => void;
+interface Item<T> {
+  id: T;
+  label: string;
 }
 
-const SearchModal = ({
+interface Props<T> {
+  placeholder: string;
+  isOpen: boolean;
+  items: Item<T>[] | undefined;
+  onClose: () => void;
+  onSearch: (value: string) => void;
+  onClickResult: (item: Item<T>) => void;
+}
+
+const SearchModal = <T extends string | number>({
   placeholder,
   isOpen,
   items,
   onClose,
   onSearch,
-}: Props) => {
+  onClickResult,
+}: Props<T>) => {
   const [value, setValue] = useState('');
   const debouncedSearch = useDebounce(value, 300);
 
@@ -49,7 +56,11 @@ const SearchModal = ({
               onChange={(e) => setValue(e.currentTarget.value)}
             />
           </Flex>
-          <Box maxH="66vh" overflow="auto">
+          <Box
+            maxH="66vh"
+            overflow="auto"
+            sx={{ ':webkit-scrollbar-thumb': { background: 'red' } }}
+          >
             {items && (
               <Box px={4}>
                 <Box
@@ -62,7 +73,7 @@ const SearchModal = ({
                   {items.map((item) => (
                     <Flex
                       as="li"
-                      key={item.id}
+                      key={`${item.id}`}
                       width="100%"
                       align="center"
                       minH={16}
@@ -72,7 +83,12 @@ const SearchModal = ({
                       rounded="lg"
                       sx={{
                         backgroundColor: 'gray.600',
+                        cursor: 'pointer',
                         ':hover': { backgroundColor: 'teal.500' },
+                      }}
+                      onClick={() => {
+                        onClickResult(item);
+                        onClose();
                       }}
                     >
                       <Text fontWeight="semibold">{item.label}</Text>
