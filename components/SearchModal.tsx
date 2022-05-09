@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useDebounce } from '../hooks/useDebounce';
 
-interface Item<T> {
+export interface Item<T> {
   id: T;
   label: string;
 }

@@ -13,7 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import Input from '../../components/Input';
-import SearchModal from '../../components/SearchModal';
+import SearchModal, { Item } from '../../components/SearchModal';
 import { useState } from 'react';
 
 const Schema = Yup.object({
@@ -41,11 +41,14 @@ const NewRecord = () => {
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchAuthor, setSearchAuthor] = useState('');
-  const [authorId, setAuthorId] = useState<{ id: number; label: string }>();
+  const [author, setAuthor] = useState<{ id: number; label: string }>();
   const { data: authors, ...response } = trpc.useQuery(
     ['author.search', { searchQuery: searchAuthor }],
     { keepPreviousData: true }
   );
+
+  /*   const [search]
+  const [label,setLabel] = useState<Item<number>>() */
 
   if (status === 'loading') {
     return 'Loading or not authenticated...';
@@ -54,7 +57,6 @@ const NewRecord = () => {
   const initialValues = {
     title: '',
     format: '',
-    authorId: 0,
     author: '',
     year: 0,
     version: '',
@@ -66,20 +68,35 @@ const NewRecord = () => {
 
   return (
     <Box>
-      <Button type="button" variant="outline" onClick={onOpen}>
-        Open
-      </Button>
-
+      <SearchModal
+        placeholder="añadir autor"
+        isOpen={isOpen}
+        onClose={onClose}
+        items={authors?.map((author) => ({
+          id: author.id,
+          label: author.name,
+        }))}
+        onSearch={setSearchAuthor}
+        onClickResult={setAuthor}
+      />
       <Formik
         initialValues={initialValues}
         validateOnMount={true}
         validationSchema={Schema}
         onSubmit={async (values, actions) => {
-          console.log(values);
+          console.log({
+            title: values.title,
+            format: values.format,
+            authorId: author?.id,
+            year: values.year || null,
+            version: values.version,
+            ownerId: values.ownerId,
+            labelId: values.labelId,
+          });
           /*  mutate({
           title: values.title,
           format: values.format,
-          authorId: values.authorId,
+          authorId: author.id,
           year: values.year || null,
           version: values.version,
           ownerId: values.ownerId,
@@ -89,26 +106,12 @@ const NewRecord = () => {
       >
         {(props) => (
           <Form>
-            <SearchModal
-              placeholder="añadir autor"
-              isOpen={isOpen}
-              onClose={onClose}
-              items={authors?.map((author) => ({
-                id: author.id,
-                label: author.name,
-              }))}
-              onSearch={setSearchAuthor}
-              onClickResult={(author) => {
-                props.setFieldValue('authorId', author.id);
-                props.setFieldValue('author', author.label);
-              }}
-            />
             <Input name="title" placeholder="Título" label="Título" />
             <Input name="format" placeholder="Formato" label="Formato" />
-            <Input name="authorId" value={authorId?.id} type="number" hidden />
+            <input name="authorId" value={author?.id} type="number" hidden />
             <Input
               name="author"
-              value={authorId?.label}
+              value={author?.label}
               label="Autor"
               sx={{ cursor: 'pointer' }}
               isReadOnly
