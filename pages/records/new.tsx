@@ -15,6 +15,7 @@ import {
 import Input from '../../components/Input';
 import SearchModal, { Item } from '../../components/SearchModal';
 import { useState } from 'react';
+import AuthorInput from '../../modules/AuthorInput';
 
 const Schema = Yup.object({
   title: Yup.string().min(1).max(100).required('Requerido'),
@@ -39,16 +40,11 @@ const NewRecord = () => {
   const { mutate, data } = trpc.useMutation('recordAdmin.create', {
     onSuccess: () => console.log('success!'),
   });
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [searchAuthor, setSearchAuthor] = useState('');
-  const [author, setAuthor] = useState<{ id: number; label: string }>();
-  const { data: authors, ...response } = trpc.useQuery(
-    ['author.search', { searchQuery: searchAuthor }],
-    { keepPreviousData: true }
-  );
-
-  /*   const [search]
-  const [label,setLabel] = useState<Item<number>>() */
+  const [relationFields, setRelationFields] = useState({
+    authorId: 0,
+    labelId: 0,
+    ownerId: 0,
+  });
 
   if (status === 'loading') {
     return 'Loading or not authenticated...';
@@ -68,17 +64,6 @@ const NewRecord = () => {
 
   return (
     <Box>
-      <SearchModal
-        placeholder="añadir autor"
-        isOpen={isOpen}
-        onClose={onClose}
-        items={authors?.map((author) => ({
-          id: author.id,
-          label: author.name,
-        }))}
-        onSearch={setSearchAuthor}
-        onClickResult={setAuthor}
-      />
       <Formik
         initialValues={initialValues}
         validateOnMount={true}
@@ -87,7 +72,7 @@ const NewRecord = () => {
           console.log({
             title: values.title,
             format: values.format,
-            authorId: author?.id,
+            authorId: relationFields.authorId,
             year: values.year || null,
             version: values.version,
             ownerId: values.ownerId,
@@ -108,14 +93,10 @@ const NewRecord = () => {
           <Form>
             <Input name="title" placeholder="Título" label="Título" />
             <Input name="format" placeholder="Formato" label="Formato" />
-            <input name="authorId" value={author?.id} type="number" hidden />
-            <Input
-              name="author"
-              value={author?.label}
-              label="Autor"
-              sx={{ cursor: 'pointer' }}
-              isReadOnly
-              onClick={onOpen}
+            <AuthorInput
+              setAuthorId={(authorId) =>
+                setRelationFields({ ...relationFields, authorId })
+              }
             />
             <Input name="year" placeholder="Año" label="Año" type="number" />
             <Input name="ownerId" type="number" hidden />

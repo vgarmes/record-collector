@@ -35,11 +35,7 @@ const SearchModal = <T extends string | number>({
   onClickResult,
 }: Props<T>) => {
   const [value, setValue] = useState('');
-  const debouncedSearch = useDebounce(value, 300);
-
-  useEffect(() => {
-    onSearch(debouncedSearch);
-  }, [debouncedSearch, onSearch]);
+  useDebounce(value, 300, onSearch);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
