@@ -9,6 +9,7 @@ import { withTRPC } from '@trpc/next';
 import { loggerLink } from '@trpc/client/links/loggerLink';
 import superjson from 'superjson';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
+import theme from '../theme';
 
 function MyApp({
   Component,
@@ -17,7 +18,7 @@ function MyApp({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <ChakraProvider>
+      <ChakraProvider resetCSS theme={theme}>
         <Layout router={router}>
           <Component {...pageProps} />
         </Layout>
