@@ -27,6 +27,7 @@ import {
 } from '@chakra-ui/icons';
 //import ColorModeButton from './color-mode-button';
 import { useSession, signOut } from 'next-auth/react';
+import ColorModeButton from './ColorModeButton';
 
 interface LinkItemProps {
   href: string;
@@ -98,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
           </LinkItem>
         </Stack>
 
-        <Box>
+        <Flex gap={4} align="center">
           {session?.user && status === 'authenticated' ? (
             <Menu>
               <MenuButton>
@@ -121,8 +122,9 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
               <Link>Iniciar sesión</Link>
             </NextLink>
           )}
-          {/*  <ColorModeButton /> */}
-          <Box ml={4} display={{ base: 'inline-block', sm: 'none' }}>
+
+          <ColorModeButton />
+          <Box display={{ base: 'block', sm: 'none' }}>
             <Menu>
               <MenuButton
                 as={IconButton}
@@ -146,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
               </MenuList>
             </Menu>
           </Box>
-        </Box>
+        </Flex>
       </Container>
     </Box>
   );
