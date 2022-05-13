@@ -25,31 +25,14 @@ import {
   SettingsIcon,
   SmallCloseIcon,
 } from '@chakra-ui/icons';
-//import ColorModeButton from './color-mode-button';
 import { useSession, signOut } from 'next-auth/react';
 import ColorModeButton from './ColorModeButton';
+import LinkItem from './LinkItem';
 
-interface LinkItemProps {
-  href: string;
-  path: string;
-}
-
-const LinkItem: React.FC<LinkItemProps> = ({ href, path, children }) => {
-  const active = path === href;
-  //const inactiveColor = useColorModeValue('gray200', 'whiteAlpha.900')
-  return (
-    <NextLink href={href} passHref>
-      <Link
-        p={2}
-        borderBottom="3px solid"
-        borderColor={active ? 'teal.100' : 'transparent'}
-        sx={{ ':hover': { textDecoration: 'none', color: 'teal.100' } }}
-      >
-        {children}
-      </Link>
-    </NextLink>
-  );
-};
+export const routes = [
+  { id: 'records', label: 'Discos', href: '/records' },
+  { id: 'authors', label: 'Autores', href: '/authors' },
+];
 
 interface NavbarProps {
   path: string;
@@ -63,7 +46,6 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
       position="fixed"
       as="nav"
       w="100%"
-      bg="var(--color-background)"
       style={{ backdropFilter: 'blur(10px)' }}
       zIndex={1}
       sx={{ ...sx }}
@@ -79,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
         <Flex align="center" mr={5}>
           <NextLink href="/" passHref>
             <Link fontSize="3xl" fontWeight="bold" letterSpacing={'tighter'}>
-              Logo
+              Record DB
             </Link>
           </NextLink>
         </Flex>
@@ -91,12 +73,11 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
           flexGrow={1}
           mt={{ base: 4, sm: 0 }}
         >
-          <LinkItem href="/records" path={path}>
-            Discos
-          </LinkItem>
-          <LinkItem href="/artists" path={path}>
-            Artistas
-          </LinkItem>
+          {routes.map(({ id, label, href }) => (
+            <LinkItem key={id} href={href} path={path}>
+              {label}
+            </LinkItem>
+          ))}
         </Stack>
 
         <Flex gap={4} align="center">
@@ -133,18 +114,11 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
                 aria-label="Options"
               />
               <MenuList>
-                <NextLink href="/" passHref>
-                  <MenuItem as={Link}>About</MenuItem>
-                </NextLink>
-                <NextLink href="/works" passHref>
-                  <MenuItem as={Link}>Works</MenuItem>
-                </NextLink>
-                <NextLink href="/posts" passHref>
-                  <MenuItem as={Link}>Posts</MenuItem>
-                </NextLink>
-                <MenuItem as={Link} href="http://wwww.github.com/vgarmes">
-                  View Source
-                </MenuItem>
+                {routes.map(({ id, label, href }) => (
+                  <NextLink key={id} href={href} passHref>
+                    <MenuItem as={Link}>{label}</MenuItem>
+                  </NextLink>
+                ))}
               </MenuList>
             </Menu>
           </Box>
