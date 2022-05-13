@@ -12,7 +12,7 @@ const Main: React.FC<MainProps> = ({ children, router }) => {
     <Box as="main" pb={8}>
       <Head>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta name="description" content="Victor Garcia's homepage" />
+        <meta name="description" content="Javier Records Collection" />
         <meta name="author" content="Victor Garcia" />
         <meta name="author" content="vgmestre" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -21,10 +21,10 @@ const Main: React.FC<MainProps> = ({ children, router }) => {
         <meta name="twitter:site" content="@vgmestre" />
         <meta name="twitter:creator" content="@vgmestre" />
         <meta name="twitter:image" content="/card.png" />
-        <meta property="og:site_name" content="Victor Garcia's Homepage" />
+        <meta property="og:site_name" content="Javier Records Collection" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/card.png" />
-        <title>Victor Garcia - Portfolio</title>
+        <title>Record DB</title>
       </Head>
 
       <Navbar path={router.asPath} />
