@@ -28,6 +28,7 @@ import {
 import { useSession, signOut } from 'next-auth/react';
 import ColorModeButton from './ColorModeButton';
 import LinkItem from './LinkItem';
+import UserMenu from './UserMenu';
 
 export const routes = [
   { id: 'records', label: 'Discos', href: '/records' },
@@ -65,46 +66,23 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
             </Link>
           </NextLink>
         </Flex>
-        <Stack
-          direction={{ base: 'column', sm: 'row' }}
+
+        <Flex
           display={{ base: 'none', sm: 'flex' }}
-          width={{ base: 'full', sm: 'auto' }}
           align="center"
           flexGrow={1}
-          mt={{ base: 4, sm: 0 }}
+          gap={2}
         >
           {routes.map(({ id, label, href }) => (
             <LinkItem key={id} href={href} path={path}>
               {label}
             </LinkItem>
           ))}
-        </Stack>
+        </Flex>
 
         <Flex gap={4} align="center">
-          {session?.user && status === 'authenticated' ? (
-            <Menu>
-              <MenuButton>
-                <Avatar name={session.user.name!} size="sm" src={''} />
-              </MenuButton>
-              <MenuList>
-                <NextLink href="/settings" passHref>
-                  <MenuItem as={Link} icon={<SettingsIcon />}>
-                    Ajustes
-                  </MenuItem>
-                </NextLink>
-                <MenuDivider />
-                <MenuItem icon={<LockIcon />} onClick={() => signOut()}>
-                  Cerrar sesión
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          ) : (
-            <NextLink href="/auth/signin" passHref>
-              <Link>Iniciar sesión</Link>
-            </NextLink>
-          )}
+          <UserMenu user={session?.user} />
 
-          <ColorModeButton />
           <Box display={{ base: 'block', sm: 'none' }}>
             <Menu>
               <MenuButton

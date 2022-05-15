@@ -13,6 +13,7 @@ const LinkItem: React.FC<LinkItemProps> = ({ href, path, children }) => {
     <NextLink href={href} passHref>
       <Link
         p={2}
+        mt="3px"
         borderBottom="3px solid"
         borderColor={active ? 'teal.100' : 'transparent'}
         sx={{ ':hover': { textDecoration: 'none', color: 'teal.100' } }}
