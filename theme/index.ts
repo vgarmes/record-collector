@@ -10,7 +10,7 @@ const breakpoints = createBreakpoints({
 });
 
 const config: ThemeConfig = {
-  initialColorMode: 'system',
+  initialColorMode: 'dark',
   useSystemColorMode: false,
 };
 
