@@ -1,16 +1,17 @@
 import { useState, useRef } from 'react';
+import NextLink from 'next/link';
 import RecordsTable from '../../components/RecordsTable';
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
 import { trpc } from '../../utils/trpc';
-import { Box, Button, Flex, IconButton, Spinner, Text } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Button, Flex, Spinner, Link, Box } from '@chakra-ui/react';
+import ButtonPages from '../../components/ButtonsPages';
+import { useSession } from 'next-auth/react';
 
 const Records: NextPage = () => {
   const pageSize = 20;
   const [pageIndex, setPageIndex] = useState(0);
+  const { data: session } = useSession();
+  const tableRef = useRef<HTMLDivElement>(null);
   const { data } = trpc.useQuery(
     ['record.paginated', { skip: pageIndex * pageSize, take: pageSize }],
     { keepPreviousData: true }
@@ -26,28 +27,30 @@ const Records: NextPage = () => {
 
   return (
     <div>
-      <RecordsTable data={data?.data} />
-      <Flex align="center" gap={5} width="100%" justify="center" mt={5}>
-        <IconButton
-          aria-label="reduce page number"
-          variant="outline"
-          disabled={pageIndex === 1}
-          onClick={() => setPageIndex((prev) => prev - 1)}
-          icon={<ChevronLeftIcon />}
-        >
-          Atrás
-        </IconButton>
-        <Text>{pageIndex}</Text>
-        <IconButton
-          aria-label="increase page number"
-          variant="outline"
-          disabled={pageIndex === Math.ceil(data.total / pageSize)}
-          onClick={() => setPageIndex((prev) => prev + 1)}
-          icon={<ChevronRightIcon />}
-        >
-          Siguiente
-        </IconButton>
-      </Flex>
+      {session && (
+        <Box pt={5}>
+          <NextLink href="/records/new" passHref>
+            <Button as={Link} colorScheme="teal">
+              Añadir
+            </Button>
+          </NextLink>
+        </Box>
+      )}
+      <ButtonPages
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        totalEntries={data.total}
+        onClickNext={() => setPageIndex((prev) => prev + 1)}
+        onClickPrev={() => setPageIndex((prev) => prev - 1)}
+      />
+      <RecordsTable ref={tableRef} data={data?.data} />
+      <ButtonPages
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        totalEntries={data.total}
+        onClickNext={() => setPageIndex((prev) => prev + 1)}
+        onClickPrev={() => setPageIndex((prev) => prev - 1)}
+      />
     </div>
   );
 };
