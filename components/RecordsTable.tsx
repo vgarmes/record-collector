@@ -1,3 +1,4 @@
+import React, { Ref, RefObject } from 'react';
 import { inferQueryOutput } from '../utils/trpc';
 import {
   Table,
@@ -14,9 +15,10 @@ interface Props {
   data: inferQueryOutput<'record.paginated'>['data'];
 }
 
-const RecordsTable = ({ data }: Props) => {
+const RecordsTable = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
+  const { data } = props;
   return (
-    <TableContainer>
+    <TableContainer ref={ref}>
       <Table
         variant="simple"
         sx={{ tableLayout: 'fixed' }}
@@ -72,6 +74,8 @@ const RecordsTable = ({ data }: Props) => {
       </Table>
     </TableContainer>
   );
-};
+});
+
+RecordsTable.displayName = 'RecordsTable';
 
 export default RecordsTable;
