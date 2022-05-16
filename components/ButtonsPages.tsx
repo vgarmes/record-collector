@@ -1,20 +1,45 @@
-import { Button, ButtonGroup } from '@chakra-ui/react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Button, ButtonGroup, Flex, IconButton, Text } from '@chakra-ui/react';
 
 interface Props {
   pageSize: number;
   pageIndex: number;
   totalEntries: number;
+  onClickNext: () => void;
+  onClickPrev: () => void;
 }
 
-const ButtonPages = ({ pageSize, pageIndex, totalEntries }: Props) => {
-  const numberOfButtons = Math.ceil(totalEntries / pageSize);
+const ButtonPages = ({
+  pageSize,
+  pageIndex,
+  totalEntries,
+  onClickNext,
+  onClickPrev,
+}: Props) => {
+  const pages = Math.ceil(totalEntries / pageSize);
 
   return (
-    <ButtonGroup variant="outline" spacing="1">
-      <Button key="back">back</Button>
-
-      <Button key="next">next</Button>
-    </ButtonGroup>
+    <Flex align="center" gap={5} width="100%" justify="center" my={5}>
+      <IconButton
+        aria-label="reduce page number"
+        variant="outline"
+        disabled={pageIndex === 1}
+        onClick={onClickPrev}
+        icon={<ChevronLeftIcon />}
+      >
+        Atrás
+      </IconButton>
+      <Text>{`${pageIndex + 1} / ${pages}`}</Text>
+      <IconButton
+        aria-label="increase page number"
+        variant="outline"
+        disabled={pageIndex === pages}
+        onClick={onClickNext}
+        icon={<ChevronRightIcon />}
+      >
+        Siguiente
+      </IconButton>
+    </Flex>
   );
 };
 
