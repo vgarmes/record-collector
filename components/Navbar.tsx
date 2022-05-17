@@ -47,7 +47,10 @@ const Navbar: React.FC<NavbarProps> = ({ path, sx }) => {
       position="fixed"
       as="nav"
       w="100%"
-      style={{ backdropFilter: 'blur(10px)' }}
+      style={{
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+      }}
       zIndex={1}
       sx={{ ...sx }}
     >
