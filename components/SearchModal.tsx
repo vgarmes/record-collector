@@ -11,6 +11,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useDebounce } from '../hooks/useDebounce';
+import SearchBar from './SearchBar';
 
 export interface Item<T> {
   id: T;
@@ -42,16 +43,12 @@ const SearchModal = <T extends string | number>({
       <ModalOverlay />
       <ModalContent>
         <ModalBody px={0} py={0}>
-          <Flex align="center" gap={5} height="68px" px={6}>
-            <Search2Icon />
-            <Input
-              variant="unstyled"
-              size="lg"
-              placeholder={placeholder}
-              value={value}
-              onChange={(e) => setValue(e.currentTarget.value)}
-            />
-          </Flex>
+          <SearchBar
+            px={6}
+            height="68px"
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
+          />
           <Box
             maxH="66vh"
             overflow="auto"
