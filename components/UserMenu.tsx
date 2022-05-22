@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuDivider,
   Link,
+  Box,
 } from '@chakra-ui/react';
 import { User } from 'next-auth';
 import { signIn, signOut } from 'next-auth/react';
@@ -26,9 +27,9 @@ const UserMenu = ({ user }: Props) => {
         </MenuButton>
         <MenuList>
           <MenuItem onClick={() => signIn()}>Iniciar sesión</MenuItem>
-          <MenuItem mt={6}>
+          <Box mt={6} px={3} py={2}>
             <ColorModeButton />
-          </MenuItem>
+          </Box>
         </MenuList>
       </Menu>
     );
