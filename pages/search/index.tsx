@@ -5,6 +5,7 @@ import RecordsTable from '../../components/RecordsTable';
 import { trpc } from '../../utils/trpc';
 
 const SearchPage: NextPage = () => {
+  // TODO: move to /records and join paginated and search endpoints
   const router = useRouter();
   const { q } = router.query;
   const isValidQuery = !!q && !Array.isArray(q);

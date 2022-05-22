@@ -27,25 +27,33 @@ const Home: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   return (
     <Flex height="50vh" width="100%" justify="center">
-      <Flex align="center" gap={5} width="100%" justify="center">
+      <Flex
+        as="form"
+        align="center"
+        gap={5}
+        width={{ base: '100%', sm: '540px' }}
+        justify="center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+        }}
+      >
         <SearchBar
           height={10}
-          width={{ base: '100%', sm: '540px' }}
           border="1px solid"
           borderColor="gray.400"
           borderRadius="md"
           px={3}
+          flex="1 0 auto"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
         />
         <Button
           type="submit"
           aria-label="submit button"
+          tabIndex={0}
+          px={4}
           disabled={searchQuery === ''}
-          onClick={(e) => {
-            e.preventDefault();
-            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-          }}
         >
           Buscar
         </Button>
