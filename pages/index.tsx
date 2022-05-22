@@ -44,7 +44,6 @@ const Home: NextPage = () => {
           borderColor="gray.400"
           borderRadius="md"
           px={3}
-          flex="1 0 auto"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
         />
