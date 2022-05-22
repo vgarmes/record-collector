@@ -45,25 +45,6 @@ const ChangeUsername = () => {
       validationSchema={Schema}
       onSubmit={async (values, actions) => {
         mutate({ newUsername: values.newUsername });
-
-        /* if (response?.error) {
-          toast({
-            title: response.error,
-            status: 'error',
-            duration: 3000,
-            isClosable: true,
-            position: 'top',
-          });
-        } else {
-          toast({
-            title: 'Login successful!',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-            position: 'top',
-          });
-          router.push('/');
-        } */
       }}
     >
       {(props) => (
