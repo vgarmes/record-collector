@@ -76,6 +76,18 @@ export const recordRouter = createRouter()
             },
           ],
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
+          label: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
     },
   });

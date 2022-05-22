@@ -6,9 +6,9 @@ interface Props extends FlexProps {
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
-const SearchBar = ({ value, onChange }: Props) => {
+const SearchBar = ({ value, onChange, ...props }: Props) => {
   return (
-    <Flex align="center" gap={5} px={6}>
+    <Flex align="center" gap={5} {...props}>
       <Search2Icon />
       <Input
         variant="unstyled"
