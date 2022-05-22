@@ -52,6 +52,32 @@ export const recordRouter = createRouter()
 
       return { data, total };
     },
+  })
+  .query('search', {
+    input: z.object({
+      query: z.string(),
+    }),
+    async resolve({ input }) {
+      return prisma.record.findMany({
+        take: 20,
+        where: {
+          OR: [
+            {
+              title: {
+                contains: input.query,
+              },
+            },
+            {
+              author: {
+                name: {
+                  contains: input.query,
+                },
+              },
+            },
+          ],
+        },
+      });
+    },
   });
 
 export const recordAdminRouter = createProtectedRouter(Role.ADMIN)
