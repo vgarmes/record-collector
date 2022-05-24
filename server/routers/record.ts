@@ -14,16 +14,20 @@ export const recordRouter = createRouter()
     input: z.object({
       skip: z.number().nonnegative().nullish(),
       take: z.number().positive().nullish(),
-      sortBy: z.string().nullish(),
+      searchQuery: z.string().optional(),
     }),
     async resolve({ input }) {
       const skip = input.skip ?? 0;
       const take = input.take ?? 50;
       //const sortBy = input.sortBy ??
+      const where: Prisma.RecordWhereInput | undefined = input.searchQuery
+        ? { author: { name: { contains: input.searchQuery } } }
+        : undefined;
 
       const data = await prisma.record.findMany({
         skip,
         take,
+        where,
         orderBy: [
           {
             author: {

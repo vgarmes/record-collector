@@ -8,16 +8,7 @@ import superjson from 'superjson';
 import { authorRouter } from './author';
 
 export const appRouter = createRouter()
-  /**
-   * Add data transformers
-   * @link https://trpc.io/docs/data-transformers
-   */
   .transformer(superjson)
-  .query('healthz', {
-    async resolve() {
-      return 'yay!';
-    },
-  })
   .merge('user.', userRouter)
   .merge('record.', recordRouter)
   .merge('recordAdmin.', recordAdminRouter)
