@@ -28,16 +28,6 @@ export const recordRouter = createRouter()
         skip,
         take,
         where,
-        orderBy: [
-          {
-            author: {
-              name: 'asc',
-            },
-          },
-          {
-            year: 'asc',
-          },
-        ],
         include: {
           author: {
             select: {
@@ -50,6 +40,16 @@ export const recordRouter = createRouter()
             },
           },
         },
+        orderBy: [
+          {
+            author: {
+              name: 'asc',
+            },
+          },
+          {
+            year: 'asc',
+          },
+        ],
       });
 
       const total = await prisma.record.count();

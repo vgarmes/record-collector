@@ -6,14 +6,19 @@ import { trpc } from '../../utils/trpc';
 import { Button, Flex, Spinner, Link, Box } from '@chakra-ui/react';
 import ButtonPages from '../../components/ButtonsPages';
 import { useSession } from 'next-auth/react';
+import SearchDebounced from '../../modules/SearchDebounced';
 
 const Records: NextPage = () => {
   const pageSize = 20;
   const [pageIndex, setPageIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: session } = useSession();
   const tableRef = useRef<HTMLDivElement>(null);
   const { data } = trpc.useQuery(
-    ['record.paginated', { skip: pageIndex * pageSize, take: pageSize }],
+    [
+      'record.paginated',
+      { skip: pageIndex * pageSize, take: pageSize, searchQuery },
+    ],
     { keepPreviousData: true }
   );
 
@@ -36,6 +41,7 @@ const Records: NextPage = () => {
           </NextLink>
         </Box>
       )}
+      <SearchDebounced onSearch={setSearchQuery} />
       <ButtonPages
         pageIndex={pageIndex}
         pageSize={pageSize}
