@@ -1,0 +1,14 @@
+name: keep-alive-cron
+on:
+  schedule:
+    - cron: '0 0 * * 1,4'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API route
+        run: |
+          curl --request GET \
+          --url 'https://record-collector.vercel.app/api/hello'
+          
+
