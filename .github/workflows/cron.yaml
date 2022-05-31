@@ -9,7 +9,7 @@ jobs:
       - name: Call API route
         run: |
           curl --request POST \
-          --url 'https://record-collector.vercel.app/api/hello' \
+          --url 'https://record-collector.vercel.app/api/cron' \
           --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
           
 
