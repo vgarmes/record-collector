@@ -19,7 +19,7 @@ import {
   ChevronRightIcon,
   Search2Icon,
 } from '@chakra-ui/icons';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/inputs/SearchInput';
 import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {

@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import * as Yup from 'yup';
-import FieldInput from '../../components/FieldInput';
+import FieldInput from '../../components/inputs/FieldInput';
 import {
   Box,
   Button,

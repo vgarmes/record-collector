@@ -11,7 +11,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useDebounce } from '../hooks/useDebounce';
-import SearchBar from './SearchBar';
+import SearchBar from './inputs/SearchInput';
 
 export interface Item<T> {
   id: T;

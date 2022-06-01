@@ -1,6 +1,6 @@
 import { FlexProps } from '@chakra-ui/react';
 import { useState } from 'react';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/inputs/SearchInput';
 import { useDebounce } from '../hooks/useDebounce';
 
 interface Props extends FlexProps {

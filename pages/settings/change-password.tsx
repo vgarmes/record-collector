@@ -1,4 +1,4 @@
-import FormField from '../../components/FieldInput';
+import FormField from '../../components/inputs/FieldInput';
 import {
   Button,
   FormControl,

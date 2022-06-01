@@ -5,7 +5,7 @@
 - Chakra UI: UI library
 - Prisma: Database ORM
 - Planetscale: MySQL database
-- tRPC ?
+- tRPC: End-to-end typesafe API
 
 ## Prisma Client
 
