@@ -23,7 +23,7 @@ const ButtonPages = ({
       <IconButton
         aria-label="reduce page number"
         variant="outline"
-        disabled={pageIndex === 1}
+        disabled={pageIndex === 0}
         onClick={onClickPrev}
         icon={<ChevronLeftIcon />}
       >
@@ -33,7 +33,7 @@ const ButtonPages = ({
       <IconButton
         aria-label="increase page number"
         variant="outline"
-        disabled={pageIndex === pages}
+        disabled={pageIndex === pages - 1}
         onClick={onClickNext}
         icon={<ChevronRightIcon />}
       >
