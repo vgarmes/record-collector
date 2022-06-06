@@ -41,9 +41,14 @@ const RecordsTable = ({ data }: Props) => {
             <Tbody>
               {group.data.map((record) => (
                 <Tr key={record.id}>
-                  <Td colSpan={3}>{record.title}</Td>
-                  <Td>{record.year}</Td>
-                  <Td>{record.label.name}</Td>
+                  <Td colSpan={5}>{record.title}</Td>
+                  <Td textAlign="right">{record.year}</Td>
+                  <Td
+                    textAlign="right"
+                    display={{ base: 'none', md: 'table-cell' }}
+                  >
+                    {record.label.name}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
