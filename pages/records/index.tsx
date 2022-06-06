@@ -3,13 +3,15 @@ import NextLink from 'next/link';
 import RecordsTable from '../../components/RecordsTable';
 import type { NextPage } from 'next';
 import { trpc } from '../../utils/trpc';
-import { Button, Flex, Spinner, Link, Box } from '@chakra-ui/react';
+import { Button, Flex, Spinner, Link, Box, Heading } from '@chakra-ui/react';
 import ButtonPages from '../../components/ButtonsPages';
 import { useSession } from 'next-auth/react';
 import SearchDebounced from '../../modules/SearchDebounced';
 import SearchBar from '../../components/inputs/SearchInput';
 import { useRouter } from 'next/router';
 import Search from '../../modules/Search';
+import { Record } from '@prisma/client';
+import GroupedRecordsTable from '../../components/GroupedRecordsTable';
 
 const Records: NextPage = () => {
   const pageSize = 20;
@@ -41,14 +43,8 @@ const Records: NextPage = () => {
         </Box>
       )}
       <Search route="/records" />
-      <ButtonPages
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        totalEntries={data.total}
-        onClickNext={() => setPageIndex((prev) => prev + 1)}
-        onClickPrev={() => setPageIndex((prev) => prev - 1)}
-      />
-      <RecordsTable ref={tableRef} data={data?.data} />
+      <GroupedRecordsTable data={data.data} />
+      {/*  <RecordsTable ref={tableRef} data={data?.data} /> */}
       <ButtonPages
         pageIndex={pageIndex}
         pageSize={pageSize}

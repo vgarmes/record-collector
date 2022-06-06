@@ -19,20 +19,7 @@ const RecordsTable = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { data } = props;
   return (
     <TableContainer ref={ref}>
-      <Table
-        variant="simple"
-        sx={{ tableLayout: 'fixed' }}
-        css={css`
-          th {
-            padding-left: 4px;
-            padding-right: 4px;
-          }
-          td {
-            padding-left: 4px;
-            padding-right: 4px;
-          }
-        `}
-      >
+      <Table variant="simple" sx={{ tableLayout: 'fixed' }}>
         <Thead>
           <Tr>
             <Th style={{ width: '30%' }}>Autor</Th>
