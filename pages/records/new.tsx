@@ -37,7 +37,7 @@ const NewRecord = () => {
       router.push('/');
     },
   });
-  const { mutate, data } = trpc.useMutation('recordAdmin.create', {
+  const { mutate, data } = trpc.useMutation('record.create', {
     onSuccess: () => console.log('success!'),
   });
   const [relationFields, setRelationFields] = useState({
